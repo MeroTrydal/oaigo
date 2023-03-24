@@ -117,3 +117,29 @@ func (client *Client) DeleteFineTunedModel(modelID string) error {
 	_, err := client.sendRequest(http.MethodDelete, "fine-tuned-models/"+modelID, nil)
 	return err
 }
+
+func (client *Client) CreateChat(messages []Message, maxTokens int, temperature, topP float64) (*ChatResponse, error) {
+	requestData := &ChatRequest{
+		Messages:    messages,
+		MaxTokens:   maxTokens,
+		Temperature: temperature,
+		TopP:        topP,
+	}
+
+	requestJson, err := json.Marshal(requestData)
+	if err != nil {
+		return nil, err
+	}
+
+	responseJson, err := client.sendRequest(http.MethodPost, client.ChatEndpoint(), bytes.NewBuffer(requestJson))
+	if err != nil {
+		return nil, err
+	}
+
+	responseData := &ChatResponse{}
+	err = json.Unmarshal(responseJson, responseData)
+	if err != nil {
+		return nil, err
+	}
+	return responseData, nil
+}
