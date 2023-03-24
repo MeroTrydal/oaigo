@@ -1,4 +1,4 @@
-package api
+package oaigo
 
 type CompletionRequest struct {
 	Prompt      string  `json:"prompt"`
